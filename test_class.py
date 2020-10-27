@@ -44,8 +44,8 @@ class CicleLoss(tf.keras.Model):
             inputs, label = inputs
             score = self.dense(inputs)
             label = tf.one_hot(label, depth=self.category, dtype=tf.float32)
-            neg = tf.exp(self.reweight*tf.nn.relu(score)*(score-self.neg_margin))
-            pos = tf.exp(-self.reweight*tf.nn.relu(1.-score)*(score-self.pos_margin))
+            neg = tf.exp(self.reweight*tf.nn.relu(score-self.on)*(score-self.neg_margin))
+            pos = tf.exp(-self.reweight*tf.nn.relu(self.op-score)*(score-self.pos_margin))
             pos = k.sum(pos*label, axis=-1)
             neg = k.sum(neg*(1.-label), axis=-1)
             loss = tf.math.log1p(pos * neg)
